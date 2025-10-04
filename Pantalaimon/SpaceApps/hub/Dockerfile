@@ -5,20 +5,22 @@ RUN pip install --no-cache-dir \
     dockerspawner \
     jupyterhub-nativeauthenticator \
     oauthenticator
+# Start JupyterHub
+CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py"]
 
-# Install Pangeo-specific packages
-RUN pip install --no-cache-dir \
-    dask-gateway \
-    pangeo-notebook
+FROM pangeo/ml-notebook:091714e
 
-# Copy the JupyterHub configuration
+# Install JupyterHub and dependencies
+RUN mamba install -y -c conda-forge \
+    jupyterhub \
+    dockerspawner \
+    jupyterhub-nativeauthenticator \
+    oauthenticator && \
+    mamba clean --all
+
+# Copy your JupyterHub config
 COPY jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 
-# Set working directory
 WORKDIR /srv/jupyterhub
-
-# Expose JupyterHub port
 EXPOSE 8000
-
-# Start JupyterHub
 CMD ["jupyterhub", "-f", "/srv/jupyterhub/jupyterhub_config.py"]
