@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  jupyterhub:
+    build:
+      context: ./hub
+      dockerfile: Dockerfile
+    container_name: pangeo-jupyterhub
+    ports:
+      - "8000:8000"
+    volumes:
+      - jupyterhub-data:/srv/jupyterhub
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - DOCKER_NETWORK_NAME=${COMPOSE_PROJECT_NAME}_default
+      - JUPYTERHUB_CRYPT_KEY=${JUPYTERHUB_CRYPT_KEY}
+    networks:
+      - default
+    restart: unless-stopped
+
+networks:
+  default:
+    name: ${COMPOSE_PROJECT_NAME}_default
+
+volumes:
+  jupyterhub-data:
