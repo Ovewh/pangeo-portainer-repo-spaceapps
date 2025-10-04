@@ -1,4 +1,4 @@
-FROM jupyterhub/jupyterhub:4.0
+FROM jupyterhub/jupyterhub:latest
 
 # Install dockerspawner for spawning user notebooks in Docker containers
 RUN pip install --no-cache-dir \
